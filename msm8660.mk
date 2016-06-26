@@ -54,6 +54,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
     qcom.hw.aac.encoder=true \
     camera2.portability.force_api=1
 
+# SnapdragonCamera properties
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.camera.feature.restart=true \
+    persist.camera.preview.size=3 # 1280x720
+
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.rild.nitz_plmn="" \
     persist.rild.nitz_long_ons_0="" \
@@ -96,11 +101,6 @@ PRODUCT_PACKAGES += \
     init.qcom.power.rc \
     ueventd.qcom.rc
 
-# TWRP Recovery
-PRODUCT_PACKAGES += \
-    postrecoveryboot.sh \
-    twrp.fstab
-
 # Audio config
 PRODUCT_COPY_FILES += \
     device/samsung/msm8660-common/configs/audio_policy.conf:system/etc/audio_policy.conf
@@ -116,7 +116,6 @@ PRODUCT_PACKAGES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    Snap \
     camera.msm8660
 
 # Chromecast
@@ -214,7 +213,7 @@ PRODUCT_PACKAGES += \
 
 # Power
 PRODUCT_PACKAGES += \
-    power.msm8660
+    power.MSM8660_SURF
 
 # Releasetools
 PRODUCT_COPY_FILES += \
