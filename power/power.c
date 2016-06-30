@@ -125,37 +125,6 @@ static int is_profile_valid(int profile)
     return profile >= 0 && profile < PROFILE_MAX;
 }
 
-static void power_init(__attribute__((unused)) struct power_module *module)
-{
-    ALOGI("%s", __func__);
-}
-
-static int boostpulse_open()
-{
-    pthread_mutex_lock(&lock);
-    if (boostpulse_fd < 0) {
-        boostpulse_fd = open(INTERACTIVE_PATH "boostpulse", O_WRONLY);
-    }
-    pthread_mutex_unlock(&lock);
-
-    return boostpulse_fd;
-}
-
-static void power_set_interactive(__attribute__((unused)) struct power_module *module, int on)
-{
-    if (!is_profile_valid(current_power_profile)) {
-        ALOGD("%s: no power profile selected yet", __func__);
-        return;
-    }
-
-    sysfs_write_int(INTERACTIVE_PATH "hispeed_freq",
-                    interactive_profiles[current_power_profile].hispeed_freq);
-    sysfs_write_int(INTERACTIVE_PATH "go_hispeed_load",
-                    interactive_profiles[current_power_profile].go_hispeed_load);
-    sysfs_write_str(INTERACTIVE_PATH "target_loads",
-                    interactive_profiles[current_power_profile].target_loads);
-}
-
 static void set_power_profile(int profile)
 {
     if (!is_profile_valid(profile)) {
@@ -246,6 +215,44 @@ static void set_power_profile(int profile)
     current_power_profile = profile;
 }
 
+static void power_init(__attribute__((unused)) struct power_module *module)
+{
+    ALOGI("%s", __func__);
+    set_power_profile(PROFILE_BALANCED);
+}
+
+static int boostpulse_open()
+{
+    pthread_mutex_lock(&lock);
+    if (boostpulse_fd < 0) {
+        boostpulse_fd = open(INTERACTIVE_PATH "boostpulse", O_WRONLY);
+    }
+    pthread_mutex_unlock(&lock);
+
+    return boostpulse_fd;
+}
+
+static void power_set_interactive(__attribute__((unused)) struct power_module *module, int on)
+{
+    if (!is_profile_valid(current_power_profile)) {
+        ALOGD("%s: no power profile selected yet", __func__);
+        return;
+    }
+
+    if (!on) {
+        set_power_profile(PROFILE_POWER_SAVE);
+    } else {
+        set_power_profile(PROFILE_BALANCED);
+    }
+
+    sysfs_write_int(INTERACTIVE_PATH "hispeed_freq",
+                    interactive_profiles[current_power_profile].hispeed_freq);
+    sysfs_write_int(INTERACTIVE_PATH "go_hispeed_load",
+                    interactive_profiles[current_power_profile].go_hispeed_load);
+    sysfs_write_str(INTERACTIVE_PATH "target_loads",
+                    interactive_profiles[current_power_profile].target_loads);
+}
+
 static void power_hint(__attribute__((unused)) struct power_module *module,
                        power_hint_t hint, void *data)
 {
@@ -278,7 +285,11 @@ static void power_hint(__attribute__((unused)) struct power_module *module,
         break;
     case POWER_HINT_LOW_POWER:
         pthread_mutex_lock(&lock);
-        set_power_profile(PROFILE_POWER_SAVE);
+        if (data) {
+            set_power_profile(PROFILE_POWER_SAVE);
+        } else {
+            set_power_profile(PROFILE_BALANCED);
+        }
         pthread_mutex_unlock(&lock);
         break;
     default:
