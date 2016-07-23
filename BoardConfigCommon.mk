@@ -55,6 +55,10 @@ ifeq ($(HOST_OS),linux)
   ifeq ($(WITH_DEXPREOPT),)
     WITH_DEXPREOPT := true
     WITH_DEXPREOPT_COMP := false
+    ifneq ($(TARGET_BUILD_VARIANT),user)
+      # Retain classes.dex in APK's for non-user builds
+      DEX_PREOPT_DEFAULT := nostripping
+    endif
   endif
 endif
 DONT_DEXPREOPT_PREBUILTS := true
@@ -88,6 +92,9 @@ TARGET_USES_QCOM_BSP := true
 TARGET_COMPILE_WITH_MSM_KERNEL := true
 TARGET_USES_AOSP := false
 
+# Radio
+COMMON_GLOBAL_CFLAGS += -DDISABLE_ASHMEM_TRACKING
+
 # Recovery
 TARGET_RECOVERY_DEVICE_DIRS := device/samsung/msm8660-common
 TARGET_RECOVERY_FSTAB := device/samsung/msm8660-common/rootdir/etc/fstab.qcom
@@ -98,7 +105,6 @@ TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/msm8660-common/releasetools
 
 # RIL
 BOARD_RIL_CLASS := ../../../device/samsung/msm8660-common/ril
-BOARD_PROVIDES_LIBRIL := true
 
 # SELinux
 BOARD_SEPOLICY_DIRS += device/samsung/msm8660-common/sepolicy
