@@ -15,9 +15,6 @@
 # inherit from qcom-common
 -include device/samsung/qcom-common/BoardConfigCommon.mk
 
-# include additional build utilities
-include device/qcom/common/utils.mk
-
 TARGET_SPECIFIC_HEADER_PATH := device/samsung/msm8660-common/include
 
 # Platform
@@ -86,11 +83,6 @@ TARGET_USES_LOGD := false
 
 # Media
 TARGET_NO_ADAPTIVE_PLAYBACK := true
-
-# Qualcomm support
-TARGET_USES_QCOM_BSP := true
-TARGET_COMPILE_WITH_MSM_KERNEL := true
-TARGET_USES_AOSP := false
 
 # Radio
 COMMON_GLOBAL_CFLAGS += -DDISABLE_ASHMEM_TRACKING
