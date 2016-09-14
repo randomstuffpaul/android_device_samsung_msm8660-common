@@ -43,6 +43,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0
 
 PRODUCT_PROPERTY_OVERRIDES += \
+    qcom.bluetooth.soc=rome
+
+PRODUCT_PROPERTY_OVERRIDES += \
     ro.vendor.extension_library=/system/lib/libqc-opt.so
 
 PRODUCT_PROPERTY_OVERRIDES += \
