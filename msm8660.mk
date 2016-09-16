@@ -112,6 +112,10 @@ PRODUCT_PACKAGES += \
     libaudio-resampler \
     libaudioutils
 
+# Browser
+PRODUCT_PACKAGES += \
+    Browser
+
 # Camera
 PRODUCT_PACKAGES += \
     Snap \
