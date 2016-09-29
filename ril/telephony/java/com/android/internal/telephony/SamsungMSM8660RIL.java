@@ -44,6 +44,7 @@ public class SamsungMSM8660RIL extends RIL implements CommandsInterface {
 
     private boolean setPreferredNetworkTypeSeen = false;
     private AudioManager mAudioManager;
+    private static final int RIL_REQUEST_DIAL_EMERGENCY = 10001;
 
     public SamsungMSM8660RIL(Context context, int preferredNetworkType, int cdmaSubscription) {
         this(context, preferredNetworkType, cdmaSubscription, null);
@@ -278,6 +279,11 @@ public class SamsungMSM8660RIL extends RIL implements CommandsInterface {
     @Override
     public void
     dial(String address, int clirMode, UUSInfo uusInfo, Message result) {
+        if (PhoneNumberUtils.isEmergencyNumber(address)) {
+            dialEmergencyCall(address, clirMode, result);
+            return;
+        }
+
         RILRequest rr = RILRequest.obtain(RIL_REQUEST_DIAL, result);
 
         rr.mParcel.writeString(address);
@@ -330,6 +336,23 @@ public class SamsungMSM8660RIL extends RIL implements CommandsInterface {
                 result.sendToTarget();
             }
         }
+    }
+
+    private void
+    dialEmergencyCall(String address, int clirMode, Message result) {
+        RILRequest rr;
+
+        rr = RILRequest.obtain(RIL_REQUEST_DIAL_EMERGENCY, result);
+        rr.mParcel.writeString(address);
+        rr.mParcel.writeInt(clirMode);
+        rr.mParcel.writeInt(0);        // CallDetails.call_type
+        rr.mParcel.writeInt(3);        // CallDetails.call_domain
+        rr.mParcel.writeString("");    // CallDetails.getCsvFromExtra
+        rr.mParcel.writeInt(0);        // Unknown
+
+        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
+
+        send(rr);
     }
 
     /**
