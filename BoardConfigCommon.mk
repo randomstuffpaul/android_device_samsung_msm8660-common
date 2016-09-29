@@ -86,9 +86,6 @@ TARGET_USES_LOGD := false
 # Media
 TARGET_NO_ADAPTIVE_PLAYBACK := true
 
-# Radio
-COMMON_GLOBAL_CFLAGS += -DDISABLE_ASHMEM_TRACKING
-
 # Recovery
 TARGET_RECOVERY_DEVICE_DIRS := device/samsung/msm8660-common
 TARGET_RECOVERY_FSTAB := device/samsung/msm8660-common/rootdir/etc/fstab.qcom
@@ -102,6 +99,7 @@ TARGET_RELEASETOOLS_EXTENSIONS := device/samsung/msm8660-common/releasetools
 
 # RIL
 BOARD_RIL_CLASS := ../../../device/samsung/msm8660-common/ril
+BOARD_PROVIDES_LIBRIL := true
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
