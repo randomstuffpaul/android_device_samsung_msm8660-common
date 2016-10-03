@@ -44,7 +44,7 @@ public class SamsungMSM8660RIL extends RIL implements CommandsInterface {
 
     private boolean setPreferredNetworkTypeSeen = false;
     private AudioManager mAudioManager;
-    private static final int RIL_REQUEST_DIAL_EMERGENCY = 10001;
+    private static final int RIL_REQUEST_DIAL_EMERGENCY = 10015;
 
     public SamsungMSM8660RIL(Context context, int preferredNetworkType, int cdmaSubscription) {
         this(context, preferredNetworkType, cdmaSubscription, null);
